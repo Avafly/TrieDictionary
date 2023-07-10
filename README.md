@@ -15,7 +15,7 @@ The program frees the memory when deleting a node or quits.
 
 ### How to run
 
-1. Clone: `https://github.com/Avafly/TrieDictionary.git`
+1. Clone: `git clone https://github.com/Avafly/TrieDictionary.git`
 2. Compile: `gcc main.c -o main`
 3. Run: `./main words`
 
