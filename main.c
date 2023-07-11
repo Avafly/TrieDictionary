@@ -79,6 +79,7 @@ int main(int argc, const char *argv[]) {
     if(argc != 2) {
         fprintf(stderr, "Error: Incorrect input.\n");
         fprintf(stderr, "Correct Usage: ./file [filename]\n");
+        return 1;
     }
     // open the words file
     fp = fopen(argv[1], "rt");
@@ -154,8 +155,6 @@ void DestroyTrie(TRIE *root) {
 
 bool InsertTrie(TRIE *root, char *str) {
     int strSize = (int) strlen(str);
-    char buff[100] = {'\0'};
-    int buffSize = 0;
 
     // check string and tolower
     for(int i = 0; i < strSize; ++i) {
@@ -167,7 +166,7 @@ bool InsertTrie(TRIE *root, char *str) {
         }
     }
 
-    // insert the word to trie
+    // traverse trie character by character based on the str's prefix
     TRIE *node = root;
     int index;
     for(int i = 0; i < strSize; ++i) {
@@ -176,12 +175,11 @@ bool InsertTrie(TRIE *root, char *str) {
             node->subtrees[index] = CreateTrieNode();
         }
         node = node->subtrees[index];
-        buff[buffSize++] = str[i];
     }
 
-    // create this word if entry is empty
+    // create the entry word if it is empty
     if(!node->entry) {
-        node->entry = strdup(buff);
+        node->entry = strdup(str);
     }
 
     return true;
