@@ -166,7 +166,7 @@ bool InsertTrie(TRIE *root, char *str) {
         }
     }
 
-    // traverse trie character by character based on the str's prefix
+    // navigate through the trie character by character based on the str's prefix
     TRIE *node = root;
     int index;
     for(int i = 0; i < strSize; ++i) {
