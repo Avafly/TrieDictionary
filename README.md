@@ -4,14 +4,14 @@ A Trie program used to word query implemented by C.
 
 The program reads the file, and insert words to trie. Therefore, the filename of input should be provided when running the program.
 
-You can query a word by following syntax.
+Syntax.
 
 * Input a word directly, the program returns whether it was found or not.
-* Input "ab*", the program returns all words that start with "ab".
-* Input "*ab", the program returns all words that end with "ab".
-* Input "a*b", the program returns all words that start with "a" and end with "b".
+* Input "ab*", the program returns all words with prefix "ab".
+* Input "*ab", the program returns all words with suffix "ab".
+* Input "a*b", the program returns all words that has the prefix "a" and the suffix "b".
 
-The program frees the memory when deleting a node or quits.
+The program releases all memory when it exits.
 
 ### How to run
 
