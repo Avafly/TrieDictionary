@@ -11,7 +11,6 @@
 #include <stdbool.h>
 #include <ctype.h>
 
-#define OSTREAM     stderr
 #define MAXSIZE     27  // 'a' - 'z' and EOW
 #define EOW         '$' // end of word
 
@@ -48,6 +47,10 @@ bool SearchTrie(TRIE *root, char *str);
 // ex) "abc" -> "abc$", "bc$a", "c$ab", "$abc"
 void InsertPermuterms(TRIE *root, char *str);
 
+// format the output string
+// ex) "k$boo" -> "book"
+void PrintWord(const char *word);
+
 // print all entries in trie using preorder traversal
 void ListTrie(TRIE *root);
 
@@ -74,37 +77,37 @@ int main(int argc, const char *argv[]) {
     
     // input validation
     if(argc != 2) {
-        fprintf(OSTREAM, "Error: Incorrect input.\n");
-        fprintf(OSTREAM, "Correct Usage: ./file [filename]\n");
+        fprintf(stderr, "Error: Incorrect input.\n");
+        fprintf(stderr, "Correct Usage: ./file [filename]\n");
     }
     // open the words file
     fp = fopen(argv[1], "rt");
     if(!fp) {
-        fprintf(OSTREAM, "File open error: %s\n", argv[1]);
+        fprintf(stderr, "File open error: %s\n", argv[1]);
         return 1;
     }
     // create structs
     trie = CreateTrieNode();        // original trie
     permute_trie = CreateTrieNode();// trie for permuterm index
     // insert the word into trie
-    fprintf(OSTREAM, "Inserting words to trie ...\t");
+    fprintf(stdout, "Loading words to trie ...\t");
     while(fscanf(fp, "%s", buff) == 1) {
         bool isInsert = InsertTrie(trie, buff);     // insert original word
         if(isInsert) {
             InsertPermuterms(permute_trie, buff);   // insert permuted words
         }
     }
-    fprintf(OSTREAM, "Done\n");
+    fprintf(stdout, "Done\n");
     // close the file stream
     fclose(fp);
 
     // fetch the user's input
-    fprintf(OSTREAM, "Press ctrl + D to quit\n");
-    fprintf(OSTREAM, "Query\n> ");
+    fprintf(stdout, "Press ctrl + D to quit\n");
+    fprintf(stdout, "Query\n> ");
     while(fscanf(stdin, "%s", buff) == 1) {
         // input validation
         if(!InputValidation(buff)) {
-            fprintf(OSTREAM, "Invalid input. Please enter only alphabets.\n> ");
+            fprintf(stdout, "Invalid input. Please enter only alphabets.\n> ");
             continue;
         }
         // query
@@ -113,17 +116,17 @@ int main(int argc, const char *argv[]) {
         }
         else {
             bool isFound = SearchTrie(trie, buff);
-            fprintf(OSTREAM, "[%s] was%s found!\n", buff, (isFound ? "" : " not"));
+            fprintf(stdout, "[%s] was%s found!\n", buff, (isFound ? "" : " not"));
         }
-        fprintf(OSTREAM, "\nQuery\n> ");
+        fprintf(stdout, "\nQuery\n> ");
     }
-    fprintf(OSTREAM, "\nFreeing memory ...\t");
+    fprintf(stdout, "\nFreeing memory ...\t");
     
     // free the memory
     DestroyTrie(trie);
     DestroyTrie(permute_trie);
-    fprintf(OSTREAM, "Done\n");
-    fprintf(OSTREAM, "Thanks for using trie\n");
+    fprintf(stdout, "Done\n");
+    fprintf(stdout, "Thanks for using trie\n");
     
     return 0;
 }
@@ -237,6 +240,27 @@ bool SearchTrie(TRIE *root, char *str) {
     return (node->entry ? true : false);
 }
 
+void PrintWord(const char *word) {
+    // find the position of '$' in the string
+    const char* dollarSign = strchr(word, '$');
+
+    // if '$' is found in the string
+    if (dollarSign != NULL) {
+        // print the part after the '$'
+        fprintf(stdout, "%s", dollarSign + 1);
+        
+        // print the part before the '$'
+        fwrite(word, sizeof(char), dollarSign - word, stdout);
+        
+        // print a newline for good measure
+        fprintf(stdout, "\n");
+    }
+    else {
+        // if '$' is not found in the string
+        fprintf(stdout, "%s\n", word);
+    }
+}
+
 void ListTrie(TRIE *root) {
     if(!root) {
         return;
@@ -244,7 +268,8 @@ void ListTrie(TRIE *root) {
     // preorder traversal
     if(root->entry) {
         if(strchr(root->entry, '$')) {
-            printf("%s\n", root->entry);
+            PrintWord(root->entry);
+            //printf("%s\n", root->entry);
         }
     }
     for(int i = 0; i < MAXSIZE; ++i) {
@@ -311,7 +336,6 @@ bool InputValidation(char *str) {
         }
         // tolower string
         str[i] = tolower((unsigned char) str[i]);
-
     }
     return true;
 }
