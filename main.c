@@ -172,30 +172,14 @@ bool InsertTrie(TRIE *root, char *str) {
     int index;
     for(int i = 0; i < strSize; ++i) {
         index = GetIndex(str[i]);
-        if(node->subtrees[index]) { // the node already exists
-            node = node->subtrees[index];
-            if(strchr(str, '$')) {
-                if(str[i] == '$') {
-                    buff[buffSize++] = '$';
-                }
-                else {
-                    buff[buffSize++] = str[i];
-                }
-            }
-        }
-        else {                      // the node is empty
+        if(!node->subtrees[index]) {
             node->subtrees[index] = CreateTrieNode();
-            node = node->subtrees[index];
-            if(!node->entry) {
-                if(str[i] == '$') {
-                    buff[buffSize++] = '$';
-                }
-                else {
-                    buff[buffSize++] = str[i];
-                }
-            }
         }
+        node = node->subtrees[index];
+        buff[buffSize++] = str[i];
     }
+
+    // create this word if entry is empty
     if(!node->entry) {
         node->entry = strdup(buff);
     }
@@ -269,7 +253,6 @@ void ListTrie(TRIE *root) {
     if(root->entry) {
         if(strchr(root->entry, '$')) {
             PrintWord(root->entry);
-            //printf("%s\n", root->entry);
         }
     }
     for(int i = 0; i < MAXSIZE; ++i) {
