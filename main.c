@@ -133,9 +133,7 @@ int main(int argc, const char *argv[]) {
 }
 
 TRIE *CreateTrieNode(void) {
-    TRIE *trie = NULL;
-    trie = (TRIE *)calloc(1, sizeof(TRIE));
-    return trie;
+    return (TRIE *)calloc(1, sizeof(TRIE));
 }
 
 void DestroyTrie(TRIE *root) {
@@ -219,7 +217,7 @@ bool SearchTrie(TRIE *root, char *str) {
         node = node->subtrees[index];
     }
     
-    return (node->entry ? true : false);
+    return node->entry;
 }
 
 void PrintWord(const char *word) {
