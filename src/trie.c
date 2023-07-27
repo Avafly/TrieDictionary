@@ -2,7 +2,7 @@
 //  main.c
 //  Trie
 //
-//  Created by CX Lin on 2023/07/10.
+//  Created by CX Lin on 2023/07/27.
 //
 
 #include <stdio.h>
@@ -10,127 +10,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ctype.h>
-
-#define MAXSIZE     27  // 'a' - 'z' and EOW
-#define EOW         '$' // end of word
-
-// used in the following functions: TrieInsert, TrieSearch, TriePrefixList
-#define GetIndex(x) ((x == EOW) ? (MAXSIZE - 1) : (x - 'a'))
-
-/* TRIE structure deifinition */
-typedef struct TrieNode {
-    char *entry;
-    struct TrieNode *subtrees[MAXSIZE];
-} TRIE;
-
-/* prototype declarations */
-
-// allocate dynamic memory for a trie node and return its address
-// return node pointer
-// NULL if overflow
-TRIE *CreateTrieNode(void);
-
-// delete all data in trie and recycle memory
-void DestroyTrie(TRIE *root);
-
-// insert new entry into the trie
-// return true success
-// otherwise false
-bool InsertTrie(TRIE *root, char *str);
-
-// retrieve trie for the requested key
-// return true key found
-// otherwise false
-bool SearchTrie(TRIE *root, char *str);
-
-// make permuterms for given str and insert them into trie
-// ex) "abc" -> "abc$", "bc$a", "c$ab", "$abc"
-void InsertPermuterms(TRIE *root, char *str);
-
-// format the output string
-// ex) "k$boo" -> "book"
-void PrintWord(const char *word);
-
-// print all entries in trie using preorder traversal
-void ListTrie(TRIE *root);
-
-// print all entries starting with str (as prefix) in trie
-// ex) "abb" -> "abbas", "abbasid", ...
-// using TrieList function
-void TriePrefixList(TRIE *root, char *str);
-
-// wildcard search
-// ex) "ab*", "*ab", "a*b", "*ab*"
-// using triePrefixList function
-void SearchWildcardTrie(TRIE *root, char *str);
-
-// input validation
-// return true is valid
-// otherwise false
-bool InputValidation(char *str);
-
-int main(int argc, const char *argv[]) {
-    TRIE *trie = NULL;
-    TRIE *permute_trie = NULL;
-    FILE *fp;
-    char buff[100];
-    
-    // input validation
-    if(argc != 2) {
-        fprintf(stderr, "Error: Incorrect input.\n");
-        fprintf(stderr, "Correct Usage: ./file [filename]\n");
-        return 1;
-    }
-    // open the words file
-    fp = fopen(argv[1], "rt");
-    if(!fp) {
-        fprintf(stderr, "File open error: %s\n", argv[1]);
-        return 1;
-    }
-    // create structs
-    trie = CreateTrieNode();        // original trie
-    permute_trie = CreateTrieNode();// trie for permuterm index
-    // insert the word into trie
-    fprintf(stdout, "Loading words to trie ...\t");
-    while(fscanf(fp, "%s", buff) == 1) {
-        bool isInsert = InsertTrie(trie, buff);     // insert original word
-        if(isInsert) {
-            InsertPermuterms(permute_trie, buff);   // insert permuted words
-        }
-    }
-    fprintf(stdout, "Done\n");
-    // close the file stream
-    fclose(fp);
-
-    // fetch the user's input
-    fprintf(stdout, "Press ctrl + D to quit\n");
-    fprintf(stdout, "Query\n> ");
-    while(fscanf(stdin, "%s", buff) == 1) {
-        // input validation
-        if(!InputValidation(buff)) {
-            fprintf(stdout, "Invalid input. Please enter only alphabets.\n> ");
-            continue;
-        }
-        // query
-        if(strchr(buff, '*')) {
-            SearchWildcardTrie(permute_trie, buff);
-        }
-        else {
-            bool isFound = SearchTrie(trie, buff);
-            fprintf(stdout, "[%s] was%s found!\n", buff, (isFound ? "" : " not"));
-        }
-        fprintf(stdout, "\nQuery\n> ");
-    }
-    fprintf(stdout, "\nFreeing memory ...\t");
-    
-    // free the memory
-    DestroyTrie(trie);
-    DestroyTrie(permute_trie);
-    fprintf(stdout, "Done\n");
-    fprintf(stdout, "Thanks for using trie\n");
-    
-    return 0;
-}
+#include "trie.h"
 
 TRIE *CreateTrieNode(void) {
     return (TRIE *)calloc(1, sizeof(TRIE));

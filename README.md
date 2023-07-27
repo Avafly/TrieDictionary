@@ -16,7 +16,7 @@ The program releases all memory when it exits.
 ### How to run
 
 1. Clone: `git clone https://github.com/Avafly/TrieDictionary.git`
-2. Compile: `gcc main.c -o main`
+2. Compile: `make`
 3. Run: `./main words`
 
 ### What is trie
