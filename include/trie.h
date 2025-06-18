@@ -5,6 +5,9 @@
 //  Created by CX Lin on 2023/07/27.
 //
 
+#ifndef TRIE_H_
+#define TRIE_H_
+
 #define MAXSIZE     27  // 'a' - 'z' and EOW
 #define EOW         '$' // end of word
 
@@ -62,3 +65,5 @@ void SearchWildcardTrie(TRIE *root, char *str);
 // return true is valid
 // otherwise false
 bool InputValidation(char *str);
+
+#endif  // TRIE_H_
